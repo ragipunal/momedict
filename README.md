@@ -1,7 +1,10 @@
 Momedict
 =========
 
-Momedict is a webapp written in Python 3 using Flask and SQLAlchemy meant to be used for homework.  
+Momedict is a webapp written in Python 3 using Flask and SQLAlchemy meant to be used for homework. 
+
+Tested on Python 3.6 and Windows 10 
+Tested on Python 3.8 and Ubuntu 20.04
 
 **Warning for users who want to adopt this project**:
 
@@ -37,7 +40,7 @@ pipenv install # Install requirements
 # for change db scheme
 # python ./main.py db migrate
 # python ./main.py db upgrade # Create/upgrade database tables
-# for initial data load but this db loaded
+# for initial data load
 python ./main.py import words/wordsapi_sample.json # Import all questions (Warning: super slow if using SQLite)
 # first run is too slow for windows os please waiting
 python ./main.py runserver # Run webserver
