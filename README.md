@@ -59,3 +59,9 @@ RAPIDAPI_KEY = 'your api key'
 RAPIDAPI_HOST = 'wordsapiv1.p.rapidapi.com'
 ```
 
+
+### Scheme
+open to scheme.pdf file
+
+### Screenshots
+please open to screenshots folder
