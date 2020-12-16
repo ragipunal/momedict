@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{% block title %}Momedict{% endblock %}</title>
+    <meta charset="utf-8">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/fav.png') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {% assets "css" %}
+    <link href="{{ ASSET_URL }}" rel="stylesheet" type="text/css">
+    {% endassets %}
+
+    <!-- DevExtreme themes -->
+    <link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/20.2.4/css/dx.common.css">
+    <link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/20.2.4/css/dx.light.css">
+</head>
+<body>
+
+<!-- Loading starts -->
+<div id="loading-wrapper">
+    <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+<!-- Loading ends -->
+
+
+<!-- Page wrapper start -->
+<div class="page-wrapper">
+
+    <!-- Sidebar wrapper start -->
+    <nav id="sidebar" class="sidebar-wrapper">
+
+        <!-- Sidebar brand start  -->
+        <div class="sidebar-brand">
+            <a href="{{url_for('memo.main')}}" class="logo">Momedict</a>
+        </div>
+        <!-- Sidebar brand end  -->
+
+        <!-- User profile start -->
+        <div class="sidebar-user-details">
+            <div class="user-profile">
+                <img src="{{ url_for('static', filename='img/user2.png')}}" class="profile-thumb" alt="User Thumb">
+                <span class="status-label"></span>
+            </div>
+            <h6 class="profile-name">{{user.name}}</h6>
+            <div class="profile-actions">
+                <a href="{{url_for('memo.profile')}}" class="blue-bg" data-toggle="tooltip" data-placement="top"
+                   title="" data-original-title="My Profile">
+                    <i class="icon-settings1"></i>
+                </a>
+                <a href="{{url_for('memo.logout')}}" class="red-bg" data-toggle="tooltip" data-placement="top" title=""
+                   data-original-title="Logout">
+                    <i class="icon-power1"></i>
+                </a>
+            </div>
+        </div>
+        <!-- User profile end -->
+
+        <!-- Sidebar content start -->
+        <div class="sidebar-content">
+
+            <!-- sidebar menu start -->
+            <div class="sidebar-menu">
+                <ul>
+                    <li>
+                        <a href="{{url_for('memo.main')}}">
+                            <i class="icon-home2"></i>
+                            <span class="menu-text">Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{url_for('memo.start_practice')}}">
+                            <i class="icon-circular-graph"></i>
+                            <span class="menu-text">Vocabulary</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <!-- sidebar menu end -->
+
+        </div>
+        <!-- Sidebar content end -->
+
+    </nav>
+    <!-- Sidebar wrapper end -->
+
+
+    <!-- Page content start  -->
+    <div class="page-content">
+
+        <!-- Header start -->
+        <header class="header">
+            <div class="toggle-btns">
+                <a id="toggle-sidebar" href="#">
+                    <i class="icon-menu"></i>
+                </a>
+                <a id="pin-sidebar" href="#">
+                    <i class="icon-menu"></i>
+                </a>
+            </div>
+            <div class="header-items">
+
+                <!-- Custom search start -->
+                <div class="custom-search">
+                    <form method="POST" action="{{url_for('memo.search')}}">
+                        <input type="text" name="keyword" class="search-query" placeholder="Search word here ...">
+
+                    </form>
+                </div>
+                <!-- Custom search end -->
+
+                <!-- Header actions start -->
+                <ul class="header-actions">
+                    <li class="dropdown user-settings">
+                        <a href="#" id="userSettings" data-toggle="dropdown" aria-haspopup="true">
+                            <img src="{{ url_for('static', filename='img/user2.png')}}" class="user-avatar"
+                                 alt="Avatar">
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userSettings">
+                            <div class="header-profile-actions">
+                                <div class="header-user-profile">
+                                    <div class="header-user">
+                                        <img src="{{ url_for('static', filename='img/user2.png')}}"
+                                             alt="Admin Template">
+                                    </div>
+                                    <h5>{{user.name}}</h5>
+                                    <p>{{ 'Admin' if user.admin else 'User' }}</p>
+                                </div>
+                                <a href="{{url_for('memo.profile')}}"><i class="icon-user1"></i> My Profile</a>
+                                <a href="{{url_for('memo.logout')}}"><i class="icon-log-out1"></i> Sign Out</a>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <!-- Header actions end -->
+            </div>
+        </header>
+        <!-- Header end -->
+
+        <!-- Main container start -->
+        <div class="main-container">
+
+
+            <!-- Page header start -->
+            <div class="page-header">
+
+                <!-- Breadcrumb start -->
+                <ol class="breadcrumb">
+                    {% block breadcrumbs %}{% endblock %}
+                </ol>
+                <!-- Breadcrumb end -->
+
+                <!-- App actions start -->
+                <div class="app-actions">
+                    <!--                    <button type="button" class="btn">Today</button>-->
+                    <!--                    <button type="button" class="btn">Yesterday</button>-->
+                    <!--                    <button type="button" class="btn">7 days</button>-->
+                    <!--                    <button type="button" class="btn">15 days</button>-->
+                    <!--                    <button type="button" class="btn active">30 days</button>-->
+                </div>
+                <!-- App actions end -->
+
+            </div>
+            <!-- Page header end -->
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for level, message in messages %}
+            <div class="row gutters">
+                <div class="col-12">
+                    <div class="alert alert-{{level}} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </div>
+        <!-- Main container end -->
+
+        <!-- Container fluid start -->
+        <div class="container-fluid">
+            <!-- Row start -->
+            <div class="row gutters">
+                <div class="col-12">
+                    <!-- Footer start -->
+                    <div class="footer">
+                        Copyright Momedict 2020
+                    </div>
+                    <!-- Footer end -->
+                </div>
+            </div>
+            <!-- Row end -->
+        </div>
+        <!-- Container fluid end -->
+
+
+    </div>
+    <!-- Page content end -->
+
+
+</div>
+<!-- Page wrapper end -->
+
+
+{% block js %}
+{% assets "js" %}
+<script type="text/javascript" src="{{ ASSET_URL }}"></script>
+{% endassets %}
+{% assets "app_js" %}
+<script type="text/javascript" src="{{ ASSET_URL }}"></script>
+{% endassets %}
+<!-- DevExtreme library -->
+<script type="text/javascript" src="https://cdn3.devexpress.com/jslib/20.2.4/js/dx.all.js"></script>
+{% endblock %}
+
+
+</body>
+</html>

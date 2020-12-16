@@ -1,0 +1,31 @@
+{% extends "base.memo.html" %}
+
+{% block breadcrumbs %}
+<li class="breadcrumb-item">Choose Vocabulary</li>
+{% endblock%}
+
+{% block content %}
+<div class="row gutters">
+    {% for vocab in vocabs %}
+    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">{{vocab.name}}</div>
+            </div>
+            <div class="card-body">
+                {{vocab.count}} words are entered.
+            </div>
+            <div class="card-footer text-center">
+
+                <a href="{{url_for('memo.vocab', id=vocab.id)}}" class="btn btn-primary btn-sm">Edit</a>
+                {% if vocab.count >= 10%}
+                <a href="{{url_for('memo.practice', id=vocab.id)}}" class="btn btn-primary btn-sm">Start</a>
+                {%endif%}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+

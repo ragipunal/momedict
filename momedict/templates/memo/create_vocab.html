@@ -1,0 +1,38 @@
+{% extends "base.memo.html" %}
+{% block breadcrumbs %}
+<li class="breadcrumb-item">Create Vocabulary</li>
+{% endblock%}
+
+{% block content %}
+<div class="row gutters">
+    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Create a new private vocabulary</div>
+            </div>
+            <div class="card-body">
+
+                <form method="POST" class="form-inline">
+                    {{ form.hidden_tag() }}
+                    <div class="form-group">
+                        <label>{{form.name.label}}</label>
+                        {{ form.name(class="form-control mx-sm-3 is-invalid" if form.name.errors else
+                        "form-control mx-sm-3") }}
+                        {% if form.name.errors %}
+                        <div class="invalid-feedback">
+                            {% for error in form.name.errors %}
+                            {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <button type="submit" class="btn btn-primary">Create</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

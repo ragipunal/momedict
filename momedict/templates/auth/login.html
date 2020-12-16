@@ -1,0 +1,56 @@
+{% extends "base.auth.html" %}
+
+{% block content %}
+<!-- Container start -->
+<div class="container">
+
+    <form method="POST">
+        <div class="row justify-content-md-center">
+            <div class="col-xl-4 col-lg-5 col-md-6 col-sm-12">
+                <div class="login-screen">
+                    <div class="login-box">
+                        <a href="#" class="login-logo">Momedict</a>
+                        <h5>Welcome back,<br/>Please Login to your Account.</h5>
+                        {{ form.hidden_tag() }}
+                        <div class="form-group">
+                            {{ form.email(class="form-control", placeholder="Email") }}
+                            {% if form.email.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.email.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            {{ form.password(class="form-control is-invalid" if form.password.errors else
+                            "form-control", placeholder="Password") }}
+                            {% if form.password.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.password.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% for level, message in messages %}
+                        <div class="alert alert-{{level}}" role="alert">{{ message }}</div>
+                        {% endfor %}
+                        {% endwith %}
+                        <div class="actions mb-4">
+                            <button type="submit" class="btn btn-success">Login</button>
+                        </div>
+                        <hr>
+                        <div class="actions align-left">
+                            <a href="{{url_for('auth.register')}}" class="btn btn-info ml-0">Create an Account</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>
+<!-- Container end -->
+{% endblock %}

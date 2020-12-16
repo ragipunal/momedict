@@ -1,0 +1,26 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+cssmin = "*"
+jsmin = "*"
+passlib = "*"
+Flask = "*"
+Flask-SQLAlchemy = "*"
+Flask-WTF = "*"
+WTForms-Alchemy = "*"
+SQLAlchemy-Continuum = "*"
+SQLAlchemy-Utils = "*"
+Flask-Migrate = "*"
+Flask-Assets = "*"
+Flask-Testing = "*"
+flask-script = "*"
+email_validator = "*"
+requests = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.6"

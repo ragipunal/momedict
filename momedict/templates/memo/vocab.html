@@ -1,0 +1,332 @@
+{% extends "base.memo.html" %}
+{% block breadcrumbs %}
+<li class="breadcrumb-item">Vocabulary: <strong>{{vocab.name}}</strong></li>
+{% endblock%}
+
+{% block content %}
+
+<div class="row gutters">
+    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Search and Add Keyword</div>
+            </div>
+            <div class="card-body">
+                <div class="form-inline">
+                    <div class="form-group mx-sm-3">
+                        Word
+                    </div>
+                    <div class="form-group mx-sm-3">
+                        <div id="keyword-txt"></div>
+                    </div>
+                    <div class="form-group mx-sm-3">
+                        <div id="search-btn"></div>
+                    </div>
+                </div>
+                <br/>
+                <div id="searchwordgrid"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Word List</div>
+            </div>
+            <div class="card-body">
+                <div id="wordgrid"></div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+{% endblock %}
+
+{% block js %}
+{{ super () }}
+<script>
+    $(function () {
+        $("#keyword-txt").dxTextBox({
+            onEnterKey: function (e) {
+                $("#search-btn").trigger("dxclick");
+            }
+        });
+
+        var deferredSearch = $.Deferred();
+
+        $("#searchwordgrid").dxDataGrid({
+            dataSource: new DevExpress.data.CustomStore({
+                key: "id",
+                load: function (loadOptions) {
+
+                    return deferredSearch.promise();
+                }
+            }),
+            visible: false,
+            remoteOperations: false,
+            columns: [{
+                dataField: "id",
+                caption: "Word",
+            },
+                {
+                    caption: "Add Command",
+                    width: 150,
+                    cellTemplate: function (container, options) {
+                        $("<div />").dxButton({
+                            icon: "add",
+                            type: "primary",
+                            text: "Add",
+                            onClick: function (e) {
+                                $.ajax({
+                                    url: "/api/vocab/addword/",
+                                    dataType: "json",
+                                    type: "post",
+                                    data: {
+                                        word: options.data.id,
+                                        id: parseInt('{{vocab.id}}')
+                                    },
+                                    success: function (result) {
+
+                                        if (result) {
+                                            $("#wordgrid").dxDataGrid('instance').refresh();
+                                            DevExpress.ui.notify({
+                                                message: 'Successfully added: ' + options.data.id + '',
+                                                width: 320
+                                            }, "success", 1000);
+                                        } else {
+                                            DevExpress.ui.notify({
+                                                message: 'Have a Problem, not added: ' + options.data.id + '',
+                                                width: 320
+                                            }, "warning", 1000);
+                                        }
+                                    },
+                                    error: function () {
+
+                                    },
+                                    timeout: 5000
+                                });
+                            }
+                        }).appendTo(container);
+                    }
+                }
+            ],
+            filterRow: {
+                visible: false
+            },
+            headerFilter: {
+                visible: false
+            },
+            groupPanel: {
+                visible: false
+            },
+            scrolling: {
+                mode: 'infinite'
+            },
+            sorting: {
+                mode: "none"
+            },
+            showBorders: true,
+            masterDetail: {
+                enabled: true,
+                template: function (container, options) {
+                    $("<div>")
+                        .dxDataGrid({
+                            dataSource: options.data.definitions,
+                            showBorders: true
+                        }).appendTo(container);
+                }
+            },
+            editing: {},
+            grouping: {
+                autoExpandAll: false
+            }
+        });
+
+        $("#search-btn").dxButton({
+            icon: "search",
+            type: "success",
+            text: "Search",
+            onClick: function (e) {
+                deferredSearch = $.Deferred();
+
+                var word = $("#keyword-txt").dxTextBox("instance").option('value');
+                if (word.length < 3) {
+                    DevExpress.ui.notify({
+                        message: 'Min lenght is 3 char',
+                        width: 320
+                    }, "warning", 1000);
+                } else {
+
+                    var searchwordgrid = $("#searchwordgrid").dxDataGrid("instance");
+
+
+                    DevExpress.ui.notify({
+                        message: '"' + word + '" keyword searching...',
+                        width: 320
+                    }, "success", 1000);
+
+
+                    $.ajax({
+                        url: "/api/words/search/" + word,
+                        dataType: "json",
+                        success: function (result) {
+                            deferredSearch.resolve(result.data, {
+                                totalCount: result.totalCount,
+                                summary: result.summary,
+                                groupCount: result.groupCount
+                            });
+
+                            if (result.data.length > 0) {
+                                searchwordgrid.option('visible', true);
+                                searchwordgrid.refresh();
+                            } else {
+                                searchwordgrid.option('visible', false);
+                                DevExpress.ui.notify({
+                                    message: 'Not found: ' + word + '',
+                                    width: 320
+                                }, "warning", 1000);
+                            }
+
+
+                        },
+                        error: function () {
+                            deferredSearch.reject("Data Loading Error");
+                        },
+                        timeout: 5000
+                    });
+
+                }
+            }
+        });
+
+
+        function isNotEmpty(value) {
+            return value !== undefined && value !== null && value !== "";
+        }
+
+        $("#wordgrid").dxDataGrid({
+            dataSource: new DevExpress.data.CustomStore({
+                key: "word_id",
+                load: function (loadOptions) {
+                    var deferred = $.Deferred(),
+                        args = {};
+                    [
+                        "skip",
+                        "take",
+                        "requireTotalCount",
+                        "requireGroupCount",
+                        "sort",
+                        "filter",
+                        "totalSummary",
+                        "group",
+                        "groupSummary"
+                    ].forEach(function (i) {
+                        if (i in loadOptions && isNotEmpty(loadOptions[i]))
+                            args[i] = JSON.stringify(loadOptions[i]);
+                    });
+                    $.ajax({
+                        url: "/api/vocab/{{vocab.id}}/words",
+                        dataType: "json",
+                        data: args,
+                        success: function (result) {
+                            deferred.resolve(result.data, {
+                                totalCount: result.totalCount,
+                                summary: result.summary,
+                                groupCount: result.groupCount
+                            });
+                        },
+                        error: function () {
+                            deferred.reject("Data Loading Error");
+                        },
+                        timeout: 5000
+                    });
+
+                    return deferred.promise();
+                },
+                remove: function (key) {
+                    $.ajax({
+                        url: "/api/vocab/{{vocab.id}}/word/delete",
+                        dataType: "json",
+                        type: 'DELETE',
+                        data: {
+                            word_id: key
+                        },
+                        success: function (result) {
+
+                        },
+                        error: function () {
+                            //
+                        },
+                        timeout: 5000
+                    });
+                }
+            }),
+            remoteOperations: true,
+            columns: [{
+                dataField: "word_id",
+                caption: "Word",
+                validationRules: [{
+                    type: "stringLength",
+                    message: "The field Customer must be a string with a maximum length of 5.",
+                    max: 3
+                }]
+            },
+                {
+                    caption: 'Practice',
+                    columns: [{
+                dataField: "view",
+                caption: "View",
+            },
+                {
+                dataField: "score",
+                caption: "Score",
+            }, {
+                dataField: 'practice_point',
+                    caption: 'Point'
+                }]
+                }
+            ],
+            filterRow: {
+                visible: false
+            },
+            headerFilter: {
+                visible: false
+            },
+            groupPanel: {
+                visible: false
+            },
+            scrolling: {
+                mode: 'infinite'
+            },
+            sorting: {
+                mode: "none"
+            },
+            showBorders: true,
+            masterDetail: {
+                enabled: true,
+                template: function (container, options) {
+                    $("<div>")
+                        .dxDataGrid({
+                            dataSource: options.data.word.definitions,
+                            showBorders: true
+                        }).appendTo(container);
+                }
+            },
+            editing: {
+                mode: "form",
+                allowDeleting: true
+            },
+            grouping: {
+                autoExpandAll: false
+            }
+        });
+    });
+</script>
+{% endblock %}
+
+
+
+

@@ -1,0 +1,86 @@
+{% extends "base.auth.html" %}
+
+{% block content %}
+<!-- Container start -->
+<div class="container">
+
+    <form method="POST">
+        <div class="row justify-content-md-center">
+            <div class="col-xl-5 col-lg-6 col-md-6 col-sm-12">
+                <div class="login-screen">
+                    <div class="login-box">
+                        <a href="#" class="login-logo">
+                            <a href="#" class="login-logo">Momedict</a>
+                        </a>
+                        <h5>Welcome,<br/>Create your Account.</h5>
+                        {{ form.hidden_tag() }}
+                        <div class="form-group">
+                            {{ form.name(class="form-control is-invalid" if form.name.errors else
+                            "form-control", placeholder="Full name") }}
+                            {% if form.name.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.name.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            {{ form.email(class="form-control is-invalid" if form.email.errors else
+                            "form-control", placeholder="Email") }}
+                            {% if form.email.errors %}
+                            <div class="invalid-feedback">
+                                {% for error in form.email.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                {{ form.password(class="form-control is-invalid" if form.password.errors else
+                            "form-control", placeholder="Password") }}
+                                {% if form.password.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.password.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                {{ form.confirm(class="form-control is-invalid" if form.confirm.errors else
+                            "form-control", placeholder="Confirm password") }}
+                                {% if form.confirm.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.confirm.errors %}
+                                    {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% for level, message in messages %}
+                        <div class="alert alert-{{level}}" role="alert">{{ message }}</div>
+                        {% endfor %}
+                        {% endwith %}
+                        <div class="actions mb-4">
+                            <button type="submit" class="btn btn-success">Signup</button>
+                        </div>
+                        <hr>
+                        <div class="m-0">
+                            <a href="{{url_for('auth.login')}}" class="btn btn-info ml-0">Login</a></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+</div>
+<!-- Container end -->
+{% endblock %}

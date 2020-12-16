@@ -1,0 +1,39 @@
+{% extends "base.memo.html" %}
+{% block breadcrumbs %}
+<li class="breadcrumb-item">Dashboard</li>
+{% endblock%}
+{% block content %}
+<!-- Row start -->
+<div class="row gutters">
+    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+        <div class="card primary">
+            <div class="card-header">
+                <div class="card-title">Create Vocabulary</div>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Create your own custom dictionary</p>
+                <a href="{{url_for('memo.create_vocab')}}" class="btn btn-danger">Start</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+        <div class="card secondary">
+            <div class="card-header">
+                <div class="card-title">Start Practice</div>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Start practicing from the custom dictionary or general dictionary.</p>
+                <a href="{{url_for('memo.start_practice')}}" class="btn btn-primary">Start</a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Row end -->
+{% endblock %}
+
+{% block js %}
+{{ super () }}
+<script>
+
+</script>
+{% endblock %}

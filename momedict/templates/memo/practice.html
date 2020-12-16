@@ -1,0 +1,78 @@
+{% extends "base.memo.html" %}
+
+{% block breadcrumbs %}
+<li class="breadcrumb-item">Practice: {{ vocab.name }}</li>
+{% endblock%}
+
+{% block content %}
+<div class="row gutters">
+    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+        <div class="card secondary">
+            <div class="card-header">
+                <div class="card-title">{{ definition.text }}</div>
+            </div>
+        </div>
+    </div>
+
+    {% for word in words %}
+    <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12">
+        <div class="card">
+            <div class="card-body">
+                <div id="word_{{word.word_id.replace(' ', '_')}}" class="btn-block"></div>
+            </div>
+        </div>
+    </div>
+
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block js %}
+{{ super () }}
+<script>
+
+$(function () {
+    {% for word in words %}
+    $("#word_{{word.word_id.replace(' ', '_')}}").dxButton({
+        'text': '{{word.word_id}}',
+        'type': 'default',
+        onClick: function(e) {
+              $.ajax({
+                url: "/api/practice/",
+                dataType: "json",
+                type: "post",
+                data: {
+                    word_id: '{{word.word_id}}',
+                    vocab_id: parseInt('{{vocab.id}}'),
+                    vw_id: '{{vocab_word.word_id}}',
+                    definition_id: parseInt('{{definition.id}}')
+                },
+                success: function (result) {
+                    if (result) {
+                        DevExpress.ui.notify({
+                            message: 'Correct',
+                            width: 320
+                        }, "success", 1000);
+                        window.location.href = '{{url_for("memo.practice", id= vocab.id)}}'
+                    } else {
+                        DevExpress.ui.notify({
+                            message: 'Wrong',
+                            width: 320
+                        }, "warning", 1000);
+                    }
+                    e.component.option('disabled', true);
+                },
+                error: function () {
+
+                },
+                timeout: 5000
+            });
+        }
+    });
+    {% endfor %}
+});
+
+
+</script>
+{% endblock %}
+
