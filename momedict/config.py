@@ -12,7 +12,7 @@ PERMAMENT_SESSION_LIFETIME = timedelta(days=60)  # around two months
 SQLALCHEMY_DATABASE_URI = 'sqlite:///' + join(PROJECT_PATH, 'momedict.db')
 SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-RAPIDAPI_KEY = '44a6254049mshc2ba581a4a78e0ap1e3892jsnb1eb91c5e252'
+RAPIDAPI_KEY = 'private-api-key-here'
 RAPIDAPI_HOST = 'wordsapiv1.p.rapidapi.com'
 
 try:
